@@ -17,6 +17,8 @@ import eStoreProduct.model.productqty;
 import eStoreProduct.utility.ProductStockPrice;
 import eStoreProduct.BLL.BLL;
 import eStoreProduct.BLL.BLLClass2;
+import eStoreProduct.model.orderModel;
+import eStoreProduct.DAO.OrderDAO;
 //import eStoreProduct.BLL.BLLClass;
 import eStoreProduct.DAO.ProductDAO;
 import eStoreProduct.DAO.cartDAO;
@@ -38,13 +40,15 @@ public class CustomerController {
 	//BLLClass obj;
     ProductDAO pdaoimp;
 	cartDAO cartimp;
+	OrderDAO orderdao;
 	@Autowired
-	public CustomerController(cartDAO cartdao,customerDAO customerdao,BLLClass2 bl2,BLL bl1 ,ProductDAO productdao) {
+	public CustomerController(cartDAO cartdao,customerDAO customerdao,BLLClass2 bl2,BLL bl1 ,ProductDAO productdao,OrderDAO odao) {
 		cdao = customerdao;
 		cartimp=cartdao;
 		this.bl2=bl2;
 		this.BLL=bl1;
 		pdaoimp=productdao;
+		orderdao=odao;
 		//cartdao1 = cartdao;
 	}
 	@RequestMapping(value = "/profilePage")
@@ -68,17 +72,25 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(value = "/invoice", method = RequestMethod.POST)
-	public String showPaymentOption(@RequestParam("razorpay_payment_id") String id, Model model, HttpSession session) {
+	public String showPaymentOption(Model model, HttpSession session,HttpServletRequest request) {
 		custCredModel cust1 = (custCredModel) session.getAttribute("customer");
 		List<ProductStockPrice> products = cartimp.getCartProds(cust1.getCustId());
-		//double var =bl1.getcartcost();
-	    //String priceString = String.valueOf(var);
-
-		//System.out.println(id);
+		//System.out.println("billno         "+ request.getParameter("razorpay_order_id"));
+		//System.out.println("paymentid         "+request.getParameter("razorpay_payment_id"));
+		orderModel order=orderdao.getOrderDetails(1,1);
+		System.out.println("order obj   "+order);
 		model.addAttribute("customer", cust1);
-		model.addAttribute("payid",id);
-		model.addAttribute("products", products);
+		//model.addAttribute("payid",id);
+		model.addAttribute("order", order);
 		//model.addAttribute("total",priceString);
+		
+		return "invoice";
+	}
+	
+	@RequestMapping(value = "/showInvoice", method = RequestMethod.POST)
+	public String showInvoice(Model model, HttpSession session) {
+		custCredModel cust1 = (custCredModel) session.getAttribute("customer");
+		
 		return "invoice";
 	}
 	
@@ -101,8 +113,7 @@ public class CustomerController {
 		double var = (double) session.getAttribute("cartcost");
 		System.out.println("amount in controller before razor pay  "+var);
 		String orderId = bl2.createRazorpayOrder(var);
-
-		
+		System.out.println("oid                  "+orderId);
 		//System.out.println("amount in controller "+var);
 		model.addAttribute("orderId",orderId);
 		//System.out.println("hiiiiii---" +var);

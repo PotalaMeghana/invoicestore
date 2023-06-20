@@ -70,20 +70,7 @@ public class customerDAOImp implements customerDAO {
 		}
 	}
 
-	/*
-	 * public custCredModel getCustomer(String email, String password) { password =
-	 * passwordHashing.hashString(password); System.out.println(email + "" +
-	 * password); // password = passwordHashing.hashString(password);
-	 * 
-	 * System.out.println(email + "" + password); String custSelectQuery =
-	 * "SELECT * FROM slam_customer WHERE cust_email = ? AND cust_password = ?";
-	 * 
-	 * try { custCredModel cu = jdbcTemplate.queryForObject(custSelectQuery, new
-	 * Object[] { email, password }, new customerMapper()); return cu; } catch
-	 * (Exception e) { // Handle the exception appropriately (e.g., logging,
-	 * throwing custom exception, etc.) e.printStackTrace(); return null; // or
-	 * throw an exception if required } }
-	 */
+	
 	
 	public custCredModel getCustomer(String email, String password) {
 		password = passwordHashing.hashString(password);

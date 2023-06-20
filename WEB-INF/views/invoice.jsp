@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-<%@ page import="eStoreProduct.model.custCredModel" %>
+<%@ page import="eStoreProduct.model.orderModel" %>
 <%@ page import="eStoreProduct.utility.ProductStockPrice" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.time.LocalDate" %>
@@ -10,6 +10,77 @@
     <meta charset="ISO-8859-1">
     <title>Invoice</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <style>
+        /* Common styles */
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .invoice-title {
+            margin-bottom: 20px;
+        }
+
+        .invoice-title h2 {
+            font-size: 28px;
+        }
+
+        .invoice-title h3 {
+            font-size: 16px;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            margin-bottom: 20px;
+        }
+
+        .col-xs-6 {
+            width: 50%;
+        }
+
+        .address strong {
+            font-weight: bold;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th,
+        .table td {
+            padding: 8px;
+            vertical-align: top;
+        }
+
+        .table th {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        /* Styles specific to print media */
+
+        @media print {
+            button.print-button {
+                display: none;
+            }
+        }
+    </style>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,12 +145,20 @@
 </head>
 <body>
 <%
-custCredModel cust = (custCredModel) request.getAttribute("customer");
-List<ProductStockPrice> products = (List<ProductStockPrice>) request.getAttribute("products");
-String payid = (String) request.getAttribute("payid");
-String total = String.valueOf(session.getAttribute("qtycost"));
+//custCredModel cust = (custCredModel) session.getAttribute("customer");
+orderModel order=(orderModel)request.getAttribute("order");
+//List<ProductStockPrice> products = (List<ProductStockPrice>) session.getAttribute("products");
+//String payid = (String) request.getAttribute("payid");
+//String total = String.valueOf(session.getAttribute("qtycost"));
 %>
-
+<script>
+function printInvoice() {
+    var printButton = document.getElementById('printButton');
+    printButton.style.display = 'none'; // Hide the button
+    window.print();
+    printButton.style.display = 'block'; // Restore the button after printing
+}
+</script>
 <div class="container">
     <div class="invoice-title">
         <h2>Invoice</h2>
@@ -90,18 +169,18 @@ String total = String.valueOf(session.getAttribute("qtycost"));
         <div class="col-xs-6">
             <address>
                 <strong>Billed To:</strong><br>
-                <p><%=cust.getCustName()%></p>
-                <p><%=cust.getCustMobile()%></p>
-                <p><%=cust.getCustLocation()%></p>
+                <p><%=order.getCustname()%></p>
+                <p><%=order.getMobile()%></p>
+                <p><%=order.getLocation()%></p>
             </address>
         </div>
         <div class="col-xs-6 text-right">
             <address>
                 <strong>Shipped To:</strong><br>
-                <p><%=cust.getCustName()%></p>
-                <p><%=cust.getCustMobile()%></p>
-                <p><%=cust.getCustSAddress()%></p>
-                <p><%=session.getAttribute("custspincode") %></p>
+                <p><%=order.getCustname()%></p>
+                <p><%=order.getMobile()%></p>
+                <p><%=order.getSaddress()%></p>
+                <p><%=order.getSpincode() %></p>
             </address>
         </div>
     </div>
@@ -110,12 +189,12 @@ String total = String.valueOf(session.getAttribute("qtycost"));
             <address>
                 <strong>Payment Method:</strong><br>
                 Online
-                <p>Payment ID: <%=payid %></p>
+                <p>Payment ID: <%=order.getOrderpayid() %></p>
             </address>
         </div>
         <div class="col-xs-6 text-right">
             <address>
-                <strong>Order Date:</strong><%=LocalDate.now() %><br>
+                <strong>Order Date:</strong><%=order.getOrderdate()%><br>
                 <br><br>
             </address>
         </div>
@@ -138,17 +217,17 @@ String total = String.valueOf(session.getAttribute("qtycost"));
                                 </tr>
                             </thead>
                             <tbody>
-                                <% for(ProductStockPrice p : products) { %>
+                               <%--  <% for(ProductStockPrice p : products) { %>
                                 <tr>
                                     <td><%=p.getProd_id()%></td>
                                     <td class="text-center"><%=p.getProd_title()%></td>
-                                    <%-- <td class="text-center"><%=p.getProd_gstc_id()%></td> --%>
+                                    <td class="text-center"><%=p.getProd_gstc_id()%></td>
                                     <td class="text-right"><%=p.getPrice()%></td>
                                 </tr>
-                                <% } %>
+                                <% } %> --%>
                                 <tr>
                                     <td>Total:</td>
-                                    <td><%=session.getAttribute("cartcost") %></td>
+                                    <td><%=order.getOrdertotal() %></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -157,9 +236,7 @@ String total = String.valueOf(session.getAttribute("qtycost"));
             </div>
             <div>
             
-<a href="orderPlaced">
-    <button>OK</button>
-</a>            </div>
+<button onclick="printInvoice()" id="printButton" >Print Invoice</button>          </div>
         </div>
     </div>
 </div>

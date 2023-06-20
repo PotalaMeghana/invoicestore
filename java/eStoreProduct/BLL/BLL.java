@@ -137,8 +137,15 @@ public BLL(ProductDAO productdao,cartDAO ca) {
 		{
 			cartcost+=p.getPrice()*p.getQuantity();
 		}
-		String custspincode=(String) session.getAttribute("custspincode");
-		System.out.println("in getting cart cost custspincode  "+custspincode);
+		//String custspincode=(String) session.getAttribute("custspincode");
+		//System.out.println("in getting cart cost custspincode  "+custspincode);
 		return cartcost;
 	}
+ public double getShipmentCharges()
+ {
+	 String custspincode=(String) session.getAttribute("custspincode");
+	 
+	return 0;
+	 
+ }
 }

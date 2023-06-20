@@ -31,6 +31,7 @@ import javax.servlet.http.HttpSession;
 public class CartController {
 	cartDAO cartimp;
 	private final ProductDAO pdaoimp;
+	double cartcost;
 	List<ProductStockPrice> alist = new ArrayList<>();
 
 	 BLL BLL;// = new BLLClass();
@@ -65,9 +66,10 @@ public class CartController {
 		if (cust1 != null) {
 			List<ProductStockPrice> products = cartimp.getCartProds(cust1.getCustId());
 			model.addAttribute("products", products);
-			double cartcost=BLL.getCartCost(cust1.getCustId());
+			cartcost=BLL.getCartCost(cust1.getCustId());
 			model.addAttribute("cartcost",cartcost);
 			model.addAttribute("cust",cust1);
+			session.setAttribute("products", products);
 			return "cart";
 		} else {
 			double cartcost=cartimp.getCartCostNonLogin((List<ProductStockPrice>)request.getAttribute("products"));
@@ -113,11 +115,12 @@ public class CartController {
 			cartModel cart = new cartModel(cust1.getCustId(), productId, quantity);
 		    cartimp.updateQty(cart);
 		    List<ProductStockPrice> products = cartimp.getCartProds(cust1.getCustId());
-			//model.addAttribute("products", products);
-			String cartcost=String.valueOf(BLL.getCartCost(cust1.getCustId()));
+			session.setAttribute("products", products);
+			cartcost=(BLL.getCartCost(cust1.getCustId()));
+			String ccost=String.valueOf(cartcost);
 			//model.addAttribute("cartcost",cartcost);
 			System.out.println("done updating quantity");
-		  return cartcost;
+		  return ccost;
 		} else {
 			for (ProductStockPrice product : alist) {
 				if (product.getProd_id() == productId) {
