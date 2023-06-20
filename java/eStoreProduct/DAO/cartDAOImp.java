@@ -69,19 +69,7 @@ public class cartDAOImp implements cartDAO {
 			return -1;
 		}
 	}
-
-	@Override
-	public double getCartCost(int id) {
-		double cartcost=0.0;
-		List<ProductStockPrice> cproducts = jdbcTemplate.query(select_cart_products, new CartProductRowMapper(prodStockDAO), id);
-		for(ProductStockPrice p:cproducts)
-		{
-			cartcost+=p.getPrice()*p.getQuantity();
-		}
-		return cartcost;
-	}
-
-	@Override
+    @Override
 	public double getCartCostNonLogin(List<ProductStockPrice> list) {
 		double cartcost=0.0;
 		for(ProductStockPrice p:list)

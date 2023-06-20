@@ -13,8 +13,6 @@ public interface cartDAO {
 	public List<ProductStockPrice> getCartProds(int cust_id);
 
 	public int updateQty(cartModel cart);
-	
-	public double getCartCost(int id);
 
 	public double getCartCostNonLogin(List<ProductStockPrice> list);
 

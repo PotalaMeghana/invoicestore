@@ -33,10 +33,11 @@ public class CartController {
 	private final ProductDAO pdaoimp;
 	List<ProductStockPrice> alist = new ArrayList<>();
 
-	// BLLClass obj = new BLLClass();
+	 BLL BLL;// = new BLLClass();
 	@Autowired
-	public CartController(cartDAO cartdao, ProductDAO productdao) {
+	public CartController(cartDAO cartdao, ProductDAO productdao,BLL b) {
 		cartimp = cartdao;
+		BLL=b;
 		pdaoimp = productdao;
 	}
 
@@ -64,7 +65,7 @@ public class CartController {
 		if (cust1 != null) {
 			List<ProductStockPrice> products = cartimp.getCartProds(cust1.getCustId());
 			model.addAttribute("products", products);
-			double cartcost=cartimp.getCartCost(cust1.getCustId());
+			double cartcost=BLL.getCartCost(cust1.getCustId());
 			model.addAttribute("cartcost",cartcost);
 			model.addAttribute("cust",cust1);
 			return "cart";
@@ -113,7 +114,7 @@ public class CartController {
 		    cartimp.updateQty(cart);
 		    List<ProductStockPrice> products = cartimp.getCartProds(cust1.getCustId());
 			//model.addAttribute("products", products);
-			String cartcost=String.valueOf(cartimp.getCartCost(cust1.getCustId()));
+			String cartcost=String.valueOf(BLL.getCartCost(cust1.getCustId()));
 			//model.addAttribute("cartcost",cartcost);
 			System.out.println("done updating quantity");
 		  return cartcost;
@@ -135,7 +136,9 @@ public class CartController {
 			List<ProductStockPrice> products = cartimp.getCartProds(cust1.getCustId());
 			model.addAttribute("products", products);
 			model.addAttribute("cust1",cust1);
-			double cartcost=cartimp.getCartCost(cust1.getCustId());
+			double cartcost=BLL.getCartCost(cust1.getCustId());
+			model.addAttribute("cartcost",cartcost);
+			 session.setAttribute("cartcost", cartcost); 
 			//model.addAttribute("products", products);
 
 			return "paymentcart";
@@ -144,19 +147,5 @@ public class CartController {
 		}
 
 	}
-	/*
-	 * @GetMapping("/buycartitems") public String confirmbuycart(Model model,
-	 * HttpSession session) {
-	 * 
-	 * custCredModel cust1 = (custCredModel) session.getAttribute("customer");
-	 * List<ProductStockPrice> products = cartimp.getCartProds(cust1.getCustId());
-	 * List<productqty> prqty =bl1.getproductqtys(); model.addAttribute("prqty",
-	 * prqty);
-	 * 
-	 * model.addAttribute("products", products);
-	 * 
-	 * return "paymentcart";
-	 * 
-	 * }
-	 */
+	
 }

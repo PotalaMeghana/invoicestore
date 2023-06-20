@@ -3,20 +3,27 @@ package eStoreProduct.BLL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import eStoreProduct.DAO.CartProductRowMapper;
 import eStoreProduct.DAO.ProductDAO;
+import eStoreProduct.DAO.cartDAO;
 import eStoreProduct.model.productqty;
 import eStoreProduct.utility.ProductStockPrice;
 @Component
 public class BLL {
  ProductDAO pdaoimp;
- 
+ cartDAO cartimp;
+ HttpSession session;
  @Autowired
-public BLL(ProductDAO productdao) {
+public BLL(ProductDAO productdao,cartDAO ca) {
 	 pdaoimp=productdao;
+	 cartimp=ca;
 }
-static private ArrayList<productqty> prd = new ArrayList<>();
+ /*static private ArrayList<productqty> prd = new ArrayList<>();
 	public static void addProduct(int pid, Double prrc) {
 		try {
 			if (prd.isEmpty()) {
@@ -121,5 +128,17 @@ static private ArrayList<productqty> prd = new ArrayList<>();
 	public List<productqty> getproductqtys()
 	{
 		return prd;
+	}*/
+ 
+ public double getCartCost(int id) {
+		double cartcost=0.0;
+		List<ProductStockPrice> cproducts = cartimp.getCartProds(id);
+		for(ProductStockPrice p:cproducts)
+		{
+			cartcost+=p.getPrice()*p.getQuantity();
+		}
+		String custspincode=(String) session.getAttribute("custspincode");
+		System.out.println("in getting cart cost custspincode  "+custspincode);
+		return cartcost;
 	}
 }

@@ -33,7 +33,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class CustomerController {
 	customerDAO cdao;
-	BLL bl1;
+	BLL BLL;
     BLLClass2 bl2;
 	//BLLClass obj;
     ProductDAO pdaoimp;
@@ -43,7 +43,7 @@ public class CustomerController {
 		cdao = customerdao;
 		cartimp=cartdao;
 		this.bl2=bl2;
-		this.bl1=bl1;
+		this.BLL=bl1;
 		pdaoimp=productdao;
 		//cartdao1 = cartdao;
 	}
@@ -67,49 +67,42 @@ public class CustomerController {
 		return "profile";
 	}
 	
-	@RequestMapping(value = "/payment", method = RequestMethod.POST)
-	public String showPaymentOptions(Model model,HttpSession session) {
-		//custCredModel cust = (custCredModel) session.getAttribute("customer");
-		//System.out.println(cust.getCustId());
-		//model.addAttribute("cust", cust);
-		return "payment";
-	}
-	
-
 	@RequestMapping(value = "/invoice", method = RequestMethod.POST)
 	public String showPaymentOption(@RequestParam("razorpay_payment_id") String id, Model model, HttpSession session) {
 		custCredModel cust1 = (custCredModel) session.getAttribute("customer");
 		List<ProductStockPrice> products = cartimp.getCartProds(cust1.getCustId());
-		double var =bl1.getcartcost();
-	    String priceString = String.valueOf(var);
+		//double var =bl1.getcartcost();
+	    //String priceString = String.valueOf(var);
 
 		//System.out.println(id);
 		model.addAttribute("customer", cust1);
 		model.addAttribute("payid",id);
 		model.addAttribute("products", products);
-		model.addAttribute("total",priceString);
+		//model.addAttribute("total",priceString);
 		return "invoice";
 	}
 	
 	@PostMapping("/updateshipment")
 	@ResponseBody
-	public String handleFormSubmission(custCredModel cust,Model model) {
+	public String handleFormSubmission(custCredModel cust,Model model, HttpSession session) {
 		//System.out.println(cust.getCustSpincode());
 		int pincode = Integer.parseInt(cust.getCustSpincode());
 		boolean isValid = pdaoimp.isPincodeValid(pincode);
 		if (isValid) {
-			model.addAttribute("custspincode",pincode);
+			session.setAttribute("custspincode",pincode);
 			return "Saved";
 		} else {
 			return "UnSaved";
 		}
 	}
 	@GetMapping("/paymentoptions")
-	public String orderCreate(Model model,HttpServletRequest request) {
+	public String orderCreate(Model model,HttpSession session) {
 		//String orderId = bl2.createRazorpayOrder(Double.parseDouble((String) session.getAttribute("qtycost")));
-		String orderId = bl2.createRazorpayOrder(Double.parseDouble(String.valueOf(request.getAttribute(""))));
+		double var = (double) session.getAttribute("cartcost");
+		System.out.println("amount in controller before razor pay  "+var);
+		String orderId = bl2.createRazorpayOrder(var);
 
-		double var =bl1.getcartcost();
+		
 		//System.out.println("amount in controller "+var);
 		model.addAttribute("orderId",orderId);
 		//System.out.println("hiiiiii---" +var);

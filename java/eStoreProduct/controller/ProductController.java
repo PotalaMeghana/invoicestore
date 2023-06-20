@@ -137,5 +137,10 @@ public class ProductController {
 		boolean isValid = pdaoimp.isPincodeValid(pincode);
 		return String.valueOf(isValid);
 	}
+	@RequestMapping(value = "/orderPlaced", method = RequestMethod.GET)
+	public String orderPlaced(Model model) {
+		
+		return "";
+	}
 
 }

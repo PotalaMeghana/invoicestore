@@ -1,31 +1,8 @@
-<%-- <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Invoice</title>
-</head>
-<body>
-
-payment Id: <%= request.getParameter("razorpay_payment_id")%> <br>
-Order Id: <%= request.getParameter("razorpay_order_id")%><br>
-Signature: <%= request.getParameter("razorpay_signature")%><br>
-payment method: <%= request.getParameter("razorpay_method")%><br>
-Amount:<%= session.getAttribute("qtycost")%>
-
-
-</body>
-</html> --%>
-
-
-
-
-
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="eStoreProduct.model.custCredModel" %>
 <%@ page import="eStoreProduct.utility.ProductStockPrice" %>
 <%@ page import="java.util.*" %>
+<%@ page import="java.time.LocalDate" %>
 
 <!DOCTYPE html>
 <html>
@@ -124,7 +101,7 @@ String total = String.valueOf(session.getAttribute("qtycost"));
                 <p><%=cust.getCustName()%></p>
                 <p><%=cust.getCustMobile()%></p>
                 <p><%=cust.getCustSAddress()%></p>
-                <p><%=cust.getCustSpincode()%></p>
+                <p><%=session.getAttribute("custspincode") %></p>
             </address>
         </div>
     </div>
@@ -138,7 +115,7 @@ String total = String.valueOf(session.getAttribute("qtycost"));
         </div>
         <div class="col-xs-6 text-right">
             <address>
-                <strong>Order Date:</strong><br>
+                <strong>Order Date:</strong><%=LocalDate.now() %><br>
                 <br><br>
             </address>
         </div>
@@ -171,7 +148,7 @@ String total = String.valueOf(session.getAttribute("qtycost"));
                                 <% } %>
                                 <tr>
                                     <td>Total:</td>
-                                    <td><%=total %></td>
+                                    <td><%=session.getAttribute("cartcost") %></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -180,7 +157,7 @@ String total = String.valueOf(session.getAttribute("qtycost"));
             </div>
             <div>
             
-<a href="loggedIn">
+<a href="orderPlaced">
     <button>OK</button>
 </a>            </div>
         </div>
